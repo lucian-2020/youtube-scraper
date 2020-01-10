@@ -1,4 +1,4 @@
-"""Base module for YTScraper"""
+'''Base module for YTScraper'''
 import json
 import requests
 
