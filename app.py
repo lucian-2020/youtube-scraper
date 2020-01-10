@@ -30,9 +30,10 @@ class VideoScraper:
     Attributes:
         headers (dict): Stores headers used in GET requests
     '''
-    def __init__(self, headers=None):
+    def __init__(self, headers=None, params=None):
         self.headers = headers if headers else \
 {'User-Agent': 'Mozilla/5.0', 'Accept-Language':'en-US'}
+        self.params = params
 
     def get_videohtml(self, url):
         '''Method used for returning the HTML of a webpage
@@ -43,7 +44,7 @@ class VideoScraper:
         Returns:
             webpage.text (string): Webpage HTML
         '''
-        webpage = requests.get(url, headers=self.headers)
+        webpage = requests.get(url, headers=self.headers, params=self.params)
         return webpage.text
 
     @staticmethod
