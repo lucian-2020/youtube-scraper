@@ -80,9 +80,9 @@ class VideoScraper:
 
 
 if __name__ == '__main__':
-    VIDEO_LINK = input("Please input a full video link:\n")
+    VIDEO_LINK = input('Please input a full video link:\n')
     SCRAPER = VideoScraper()
     VIDEO_DETAILS = SCRAPER.get_videodetails(VIDEO_LINK)
 
     for key, value in VIDEO_DETAILS.items():
-        print(f"The {key} is {value}")
+        print(f'The {key} is {value}')
