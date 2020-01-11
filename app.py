@@ -57,17 +57,12 @@ class RequestsScraper:
 class Video:
     '''
     Class used for scraping YouTube videos
-
-    Attributes:
-        headers (dict): Stores headers used in GET requests
-        scraper (RequestsScraper):
     '''
-    def __init__(self, scrape_with='requests'):
-        if scrape_with == 'requests':
-            self.scraper = RequestsScraper()
+    def __init__(self):
+        pass
 
     @staticmethod
-    def parse_videodata(source):
+    def parse_req_data(source):
         '''Method used for parsing html and returning relevant video details
 
         Args:
@@ -88,23 +83,28 @@ class Video:
 
         return video_details
 
-    def get_videodetails(self, url):
+    @staticmethod
+    def get_data(url, scraper):
         '''Method used for requesting and returning video details
 
         Args:
             url (string): Link to the webpage
+            scraper (object): Instance of a Scraper class
 
         Returns:
             [unnamed] (dictionary): Video details specified in VSP
         '''
-        self.scraper.make_request(url)
-        return Video.parse_videodata(self.scraper.get_text())
 
+        if isinstance(scraper, RequestsScraper):
+            scraper.make_request(url)
+            return Video.parse_req_data(scraper.get_text())
+
+        raise Exception("Please pass an instance of a scraper class")
 
 if __name__ == '__main__':
     VIDEO_LINK = input('Please input a full YouTube video link:\n')
-    VIDEO_DETAILS = Video().get_videodetails(VIDEO_LINK)
+    SCRAPER = RequestsScraper()
+    VIDEO_DETAILS = Video.get_data(VIDEO_LINK, SCRAPER)
 
     for key, value in VIDEO_DETAILS.items():
         print(f'The {key} is {value}')
-        
