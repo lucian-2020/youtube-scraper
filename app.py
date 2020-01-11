@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-# Dictionary containing BeautifulSoup paths for video details
+# VideoSoupPaths contains paths for video details
 VSP = {
     'title':{'tag': 'span',
              'attrs': {'class': 'watch-title'}},
@@ -19,33 +19,52 @@ VSP = {
                  'attrs': {'title': 'I dislike this'}},
     'channel_subcount': {'tag': 'span',
                          'attrs': {'class': 'yt-subscription-button-subscriber\
--count-branded-horizontal yt-subscriber-count'}}
-}
+-count-branded-horizontal yt-subscriber-count'}}}
 
 
-class VideoScraper:
+class RequestsScraper:
     '''
-    Class used for scraping YouTube videos
+    Class used for scraping YouTube videos using the requests library
 
     Attributes:
         headers (dict): Stores headers used in GET requests
+        params (dict): Stores other parameters used in GET requests
+        response (request object): Null until GET request
     '''
     def __init__(self, headers=None, params=None):
         self.headers = headers if headers else \
 {'User-Agent': 'Mozilla/5.0', 'Accept-Language':'en-US'}
         self.params = params
+        self.response = None
 
-    def get_videohtml(self, url):
+    def make_request(self, url):
         '''Method used for returning the HTML of a webpage
 
         Args:
             url (string): Link to the webpage
+        '''
+        self.response = requests.get(url, headers=self.headers, params=self.params)
+
+    def get_text(self):
+        '''Method used for returning the HTML of a a request
 
         Returns:
-            webpage.text (string): Webpage HTML
+            self.text (string): Webpage HTML
         '''
-        webpage = requests.get(url, headers=self.headers, params=self.params)
-        return webpage.text
+        return self.response.text
+
+
+class Video:
+    '''
+    Class used for scraping YouTube videos
+
+    Attributes:
+        headers (dict): Stores headers used in GET requests
+        scraper (RequestsScraper):
+    '''
+    def __init__(self, scrape_with='requests'):
+        if scrape_with == 'requests':
+            self.scraper = RequestsScraper()
 
     @staticmethod
     def parse_videodata(source):
@@ -61,7 +80,8 @@ class VideoScraper:
         video_details = {}
 
         for item in list(VSP.keys()):
-            video_details[item] = soup.findAll(VSP[item]['tag'], VSP[item]['attrs'])[0].text.strip()
+            video_details[item] = soup.findAll(VSP[item]['tag'],
+                                               VSP[item]['attrs'])[0].text.strip()
 
         video_details['channel_name'] = json.loads(video_details['channel_name'])\
 ['itemListElement'][0]['item']['name']
@@ -77,13 +97,14 @@ class VideoScraper:
         Returns:
             [unnamed] (dictionary): Video details specified in VSP
         '''
-        return VideoScraper.parse_videodata(self.get_videohtml(url))
+        self.scraper.make_request(url)
+        return Video.parse_videodata(self.scraper.get_text())
 
 
 if __name__ == '__main__':
-    VIDEO_LINK = input('Please input a full video link:\n')
-    SCRAPER = VideoScraper()
-    VIDEO_DETAILS = SCRAPER.get_videodetails(VIDEO_LINK)
+    VIDEO_LINK = input('Please input a full YouTube video link:\n')
+    VIDEO_DETAILS = Video().get_videodetails(VIDEO_LINK)
 
     for key, value in VIDEO_DETAILS.items():
         print(f'The {key} is {value}')
+        
