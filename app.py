@@ -1,13 +1,22 @@
 '''Base module for YTScraper'''
-from youtube import Video, Playlist
+from commander import Commander
 
 if __name__ == '__main__':
-    INPUT = input('Please input a full YouTube video/playlist link:\n')
+    REQUEST_NO = int(input('Number of requests: '))
+    
+    for i in range(REQUEST_NO):
+        INPUT = input('Please input a full YouTube video/playlist link:\n')
 
-    if 'playlist' in INPUT:
-        SCRAPER = Playlist(scrape_with='requests')
-    elif 'watch' in INPUT:
-        SCRAPER = Video(scrape_with='requests')
+        COMMANDER = Commander()
 
-    SCRAPER.get_data(INPUT)
-    SCRAPER.display_data()
+        if 'playlist' in INPUT:
+            COMMANDER.set_target('playlist')
+            COMMANDER.set_scraper('requests')
+            DATA = COMMANDER.extract_data(INPUT)
+
+        elif 'watch' in INPUT:
+            COMMANDER.set_target('video')
+            COMMANDER.set_scraper('requests')
+            DATA = COMMANDER.extract_data(INPUT)
+
+        COMMANDER.target.display_data()

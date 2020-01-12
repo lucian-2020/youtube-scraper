@@ -20,13 +20,10 @@ class RequestsScraper(Scraper):
 
     Attributes:
         headers (dict): Stores headers used in GET requests
-        params (dict): Stores other parameters used in GET requests
         response (request object): Null until GET request
     '''
-    def __init__(self, headers=None, params=None):
-        self.headers = headers if headers else \
-{'User-Agent': 'Mozilla/5.0', 'Accept-Language':'en-US'}
-        self.params = params
+    def __init__(self):
+        self.headers = {'User-Agent': 'Mozilla/5.0', 'Accept-Language':'en-US'}
         self.response = None
 
     def make_request(self, url):
@@ -35,7 +32,7 @@ class RequestsScraper(Scraper):
         Args:
             url (string): Link to the webpage
         '''
-        self.response = requests.get(url, headers=self.headers, params=self.params)
+        self.response = requests.get(url, headers=self.headers)
 
     def get_text(self):
         '''Method used for returning the HTML of a a request

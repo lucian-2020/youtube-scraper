@@ -6,14 +6,10 @@ from bs4 import BeautifulSoup
 
 from soup_paths import REQUEST_VIDEO_PATHS as RVP
 from soup_paths import REQUEST_PLAYLIST_PATHS as RPP
-from scraper import RequestsScraper
 
 class YoutubeWebPage(ABC):
     '''Blueprint for Youtube classes'''
-    def __init__(self, scrape_with, **kwargs):
-        if scrape_with == 'requests':
-            self.scraper = RequestsScraper(kwargs)
-
+    def __init__(self):
         self.current_data = None
 
     @abstractmethod
@@ -23,23 +19,6 @@ class YoutubeWebPage(ABC):
     @abstractmethod
     def display_data(self):
         '''Method used displaying current object data'''
-
-    def get_data(self, url):
-        '''Method used for requesting and returning video details
-
-        Args:
-            url (string): Link to the webpage
-            scraper (object): Instance of a Scraper class
-
-        Returns:
-            [unnamed] (dictionary): Video details specified in VSP
-        '''
-
-        if isinstance(self.scraper, RequestsScraper):
-            self.scraper.make_request(url)
-            return self.parse_data(self.scraper.get_text())
-
-        raise Exception("Please pass an instance of a scraper class")
 
 
 class Video(YoutubeWebPage):
