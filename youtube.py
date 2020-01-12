@@ -1,14 +1,15 @@
 '''Module responsible for defining Youtube objects'''
 import json
-
 from abc import ABC, abstractmethod
+
 from bs4 import BeautifulSoup
+
 from soup_paths import REQUEST_VIDEO_PATHS as RVP
 from soup_paths import REQUEST_PLAYLIST_PATHS as RPP
 from scraper import RequestsScraper
 
 class YoutubeWebPage(ABC):
-    '''Parent class for all Youtube webpages'''
+    '''Blueprint for Youtube classes'''
     def __init__(self, scrape_with, **kwargs):
         if scrape_with == 'requests':
             self.scraper = RequestsScraper(kwargs)
