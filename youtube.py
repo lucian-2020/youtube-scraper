@@ -14,9 +14,15 @@ class YoutubeWebPage(ABC):
         if scrape_with == 'requests':
             self.scraper = RequestsScraper(kwargs)
 
+        self.current_data = None
+
     @abstractmethod
     def parse_data(self, source):
         '''Method used for parsing and returning data'''
+
+    @abstractmethod
+    def display_data(self):
+        '''Method used displaying current object data'''
 
     def get_data(self, url):
         '''Method used for requesting and returning video details
@@ -58,7 +64,12 @@ class Video(YoutubeWebPage):
         video_details['channel_name'] = json.loads(video_details['channel_name'])\
 ['itemListElement'][0]['item']['name']
 
-        return video_details
+        self.current_data = video_details
+
+    def display_data(self):
+        '''Method used for displaying current object data'''
+        for key, value in self.current_data.items():
+            print(f'{key}: {value}\n')
 
 
 class Playlist(YoutubeWebPage):
@@ -81,4 +92,9 @@ class Playlist(YoutubeWebPage):
             full_link = ''.join(['https://www.youtube.com', partial_link])
             video_list.append(full_link)
 
-        return video_list
+        self.current_data = video_list
+
+    def display_data(self):
+        '''Method used for displaying current object data'''
+        for video in self.current_data:
+            print(video)
