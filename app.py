@@ -3,7 +3,7 @@ from commander import Commander
 
 if __name__ == '__main__':
     REQUEST_NO = int(input('Number of requests: '))
-    
+
     for i in range(REQUEST_NO):
         INPUT = input('Please input a full YouTube video/playlist link:\n')
 

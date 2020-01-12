@@ -1,14 +1,16 @@
 '''Module responsible for defining commander classes'''
-from youtube import Video, Playlist
-from scraper import RequestsScraper
+from parsers import VideoParser, PlaylistParser
+from scrapers import RequestsScraper
 
 class Commander:
     '''Class responsible for orchestrating youtube/scraper functionality'''
     _scrapers = {}
     _targets = {}
 
-    def __init__(self):
-        pass
+    def __init__(self, scraper=None, target=None):
+        if scraper and target:
+            self.set_scraper(scraper)
+            self.set_target(target)
 
     def set_scraper(self, scraper):
         '''Setting scraper and making sure to use the same object if already used'''
@@ -26,9 +28,9 @@ class Commander:
             self.target = Commander._targets[target]
         else:
             if 'video' in target:
-                self.target = Video()
+                self.target = VideoParser()
             elif 'playlist' in target:
-                self.target = Playlist()
+                self.target = PlaylistParser()
 
             Commander._targets[target] = self.target
 
