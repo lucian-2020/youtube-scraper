@@ -1,4 +1,4 @@
-'''Module responsible for scrapers'''
+'''Module responsible for defining scrapers'''
 import requests
 
 class RequestsScraper:

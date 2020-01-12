@@ -1,4 +1,4 @@
-'''Module responsible for declaring BeautifulSoup paths'''
+'''Module responsible for defining BeautifulSoup paths'''
 REQUEST_VIDEO_PATHS = {
     'title':{'tag': 'span',
              'attrs': {'class': 'watch-title'}},
@@ -13,3 +13,9 @@ REQUEST_VIDEO_PATHS = {
     'channel_subcount': {'tag': 'span',
                          'attrs': {'class': 'yt-subscription-button-subscriber\
 -count-branded-horizontal yt-subscriber-count'}}}
+
+REQUEST_PLAYLIST_PATHS = {
+    "link":{"tag":"a",
+            "attrs":{"class": "pl-video-title-link yt-uix-tile-link\
+ yt-uix-sessionlink spf-link"}}
+}
