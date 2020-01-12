@@ -1,58 +1,9 @@
 '''Base module for YTScraper'''
 import json
-import requests
 
 from bs4 import BeautifulSoup
-
-
-# VideoSoupPaths contains paths for video details
-VSP = {
-    'title':{'tag': 'span',
-             'attrs': {'class': 'watch-title'}},
-    'channel_name': {'tag':'script',
-                     'attrs': {'type': 'application/ld+json'}},
-    'number_of_views': {'tag': 'div',
-                        'attrs': {'class': 'watch-view-count'}},
-    'likes': {'tag': 'button',
-              'attrs': {'title': 'I like this'}},
-    'dislikes': {'tag': 'button',
-                 'attrs': {'title': 'I dislike this'}},
-    'channel_subcount': {'tag': 'span',
-                         'attrs': {'class': 'yt-subscription-button-subscriber\
--count-branded-horizontal yt-subscriber-count'}}}
-
-
-class RequestsScraper:
-    '''
-    Class used for scraping YouTube videos using the requests library
-
-    Attributes:
-        headers (dict): Stores headers used in GET requests
-        params (dict): Stores other parameters used in GET requests
-        response (request object): Null until GET request
-    '''
-    def __init__(self, headers=None, params=None):
-        self.headers = headers if headers else \
-{'User-Agent': 'Mozilla/5.0', 'Accept-Language':'en-US'}
-        self.params = params
-        self.response = None
-
-    def make_request(self, url):
-        '''Method used for returning the HTML of a webpage
-
-        Args:
-            url (string): Link to the webpage
-        '''
-        self.response = requests.get(url, headers=self.headers, params=self.params)
-
-    def get_text(self):
-        '''Method used for returning the HTML of a a request
-
-        Returns:
-            self.text (string): Webpage HTML
-        '''
-        return self.response.text
-
+from soup_paths import REQUEST_VIDEO_PATHS as RVP
+from scraper import RequestsScraper
 
 class Video:
     '''
@@ -62,7 +13,7 @@ class Video:
         pass
 
     @staticmethod
-    def parse_req_data(source):
+    def parse_data(source):
         '''Method used for parsing html and returning relevant video details
 
         Args:
@@ -74,9 +25,9 @@ class Video:
         soup = BeautifulSoup(source, 'html.parser')
         video_details = {}
 
-        for item in list(VSP.keys()):
-            video_details[item] = soup.findAll(VSP[item]['tag'],
-                                               VSP[item]['attrs'])[0].text.strip()
+        for item in list(RVP.keys()):
+            video_details[item] = soup.findAll(RVP[item]['tag'],
+                                               RVP[item]['attrs'])[0].text.strip()
 
         video_details['channel_name'] = json.loads(video_details['channel_name'])\
 ['itemListElement'][0]['item']['name']
@@ -97,7 +48,7 @@ class Video:
 
         if isinstance(scraper, RequestsScraper):
             scraper.make_request(url)
-            return Video.parse_req_data(scraper.get_text())
+            return Video.parse_data(scraper.get_text())
 
         raise Exception("Please pass an instance of a scraper class")
 
