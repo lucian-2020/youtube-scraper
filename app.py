@@ -5,12 +5,12 @@ if __name__ == '__main__':
     INPUT = input('Please input a full YouTube video/playlist link:\n')
 
     if 'playlist' in INPUT:
-        PLAYLIST = Playlist('requests')
+        PLAYLIST = Playlist(scrape_with='requests')
         VIDEO_LIST = PLAYLIST.get_data(INPUT)
         for video in VIDEO_LIST:
             print(video)
     elif 'watch' in INPUT:
-        VIDEO = Video()
+        VIDEO = Video(scrape_with='requests')
         VIDEO_DETAILS = VIDEO.get_data(INPUT)
         for key, value in VIDEO_DETAILS.items():
             print(f'The {key} is {value}')

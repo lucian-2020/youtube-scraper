@@ -9,7 +9,7 @@ from scraper import RequestsScraper
 
 class YoutubeWebPage(ABC):
     '''Parent class for all Youtube webpages'''
-    def __init__(self, scrape_with='requests', **kwargs):
+    def __init__(self, scrape_with, **kwargs):
         if scrape_with == 'requests':
             self.scraper = RequestsScraper(kwargs)
 
