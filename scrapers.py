@@ -6,11 +6,12 @@ import requests
 class Scraper(ABC):
     '''Blueprint for Scraper classes'''
     @abstractmethod
-    def make_request(self, url):
+    def get_request(self, url):
         '''Method used for making a GET request at the url parameter'''
-
+    
+    @property
     @abstractmethod
-    def get_text(self):
+    def text(self):
         '''Method used for returning the HTML of a request'''
 
 
@@ -26,15 +27,16 @@ class RequestsScraper(Scraper):
         self.headers = {'User-Agent': 'Mozilla/5.0', 'Accept-Language':'en-US'}
         self.response = None
 
-    def make_request(self, url):
+    def get_request(self, url):
         '''Method used for making a GET request at the url parameter
 
         Args:
             url (string): Link to the webpage
         '''
         self.response = requests.get(url, headers=self.headers)
-
-    def get_text(self):
+    
+    @property
+    def text(self):
         '''Method used for returning the HTML of a a request
 
         Returns:

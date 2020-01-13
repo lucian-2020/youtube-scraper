@@ -3,17 +3,18 @@ from dataprocessors import VideoDP, PlaylistDP
 from scrapers import RequestsScraper
 
 class Commander:
-    '''Class responsible for orchestrating parsers/scrapers functionality'''
-    _scrapers_pool = {'requests':RequestsScraper}
-    _dataprocessors_pool = {'video':VideoDP, 'playlist': PlaylistDP}
+    '''Class responsible for orchestrating dataprocessors/scrapers functionality'''
+    _scrapers_pool = {'requests': RequestsScraper}
+    _dataprocessors_pool = {'video': VideoDP, 'playlist': PlaylistDP}
 
     _scrapers = {}
     _dataprocessors = {}
 
     def __init__(self, scraper=None, dataprocessor=None):
-        if scraper and targets:
+        if scraper and dataprocessor:
             self.set_scraper(scraper)
             self.set_dataprocessor(dataprocessor)
+        self.set_dispatcher()
 
     def set_scraper(self, scraper):
         '''Setting scraper and making sure to use the same object if already used'''
@@ -31,14 +32,19 @@ class Commander:
             self.dataprocessor = Commander._dataprocessors_pool[dataprocessor]()
             Commander._dataprocessors[dataprocessor] = self.dataprocessor
 
-    def extract_data(self, url):
-        '''Method used for requesting and returning video details
+    def set_dispatcher(self):
+        '''Setts dispatcher dictionary responsible for command logic'''
+        self._dispatcher = {
+            'type': lambda x: self.set_dataprocessor(x)\
+             if x in Commander._dataprocessors_pool.keys() else None,
+            'scraper': lambda x: self.set_scraper(x)\
+             if x in Commander._scrapers_pool.keys() else None,
+            'link': lambda x: self.scraper.get_request(x) if x else None,
+            'parse': lambda x: self.dataprocessor.parse_data(self.scraper.text) if x else None,
+            'clean': lambda x: self.dataprocessor.clean_data() if x else None,
+            'display': lambda x: self.dataprocessor.display_data() if x else None}
 
-        Args:
-            url (string): Link to the webpage
-
-        Returns:
-            [unnamed]: Video details
-        '''
-        self.scraper.make_request(url)
-        return self.dataprocessor.parse_data(self.scraper.get_text())
+    def execute(self, command):
+        '''Executes given command using dispatcher'''
+        for item, value in command.items():
+            self._dispatcher[item](value)

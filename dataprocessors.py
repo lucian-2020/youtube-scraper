@@ -22,7 +22,7 @@ class DataProcessor(ABC):
 
 
 class VideoDP(DataProcessor):
-    '''Class used for scraping a YouTube video'''
+    '''Class used for processing Youtube video data'''
 
     def parse_data(self, source):
         '''Method used for parsing html and returning relevant video details
@@ -31,7 +31,7 @@ class VideoDP(DataProcessor):
             source (string): Full webpage
 
         Returns:
-            video_details (dictionary): Video details specified in VSP
+            self.video_details (dictionary): Video details specified in VSP
         '''
         soup = BeautifulSoup(source, 'html.parser')
         video_details = {}
@@ -45,6 +45,13 @@ class VideoDP(DataProcessor):
 
         self.current_data = video_details
 
+    def clean_data(self):
+        to_clean = ['likes', 'dislikes', 'number_of_views']
+        for detail in to_clean:
+            self.current_data[detail] = ''.join(digit for digit in \
+self.current_data[detail] if digit.isdigit())
+
+
     def display_data(self):
         '''Method used for displaying current object data'''
         for key, value in self.current_data.items():
@@ -52,7 +59,7 @@ class VideoDP(DataProcessor):
 
 
 class PlaylistDP(DataProcessor):
-    '''Class used for scraping a Youtube playlist'''
+    '''Class used for processing Youtube playlist data'''
 
     def parse_data(self, source):
         '''Method used for parsing html and returning a video list
@@ -61,7 +68,7 @@ class PlaylistDP(DataProcessor):
             source (string): Full webpage
 
         Returns:
-            video_list (list): List of youtube videos present in playlist page
+            self.video_list (list): List of youtube videos present in playlist page
         '''
         soup = BeautifulSoup(source, 'html.parser')
         video_list = []
@@ -72,6 +79,9 @@ class PlaylistDP(DataProcessor):
             video_list.append(full_link)
 
         self.current_data = video_list
+
+    def clean_data(self):
+        pass
 
     def display_data(self):
         '''Method used for displaying current object data'''

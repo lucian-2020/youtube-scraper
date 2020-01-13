@@ -9,10 +9,8 @@ REQUEST_VIDEO_PATHS = {
     'likes': {'tag': 'button',
               'attrs': {'title': 'I like this'}},
     'dislikes': {'tag': 'button',
-                 'attrs': {'title': 'I dislike this'}},
-    'channel_subcount': {'tag': 'span',
-                         'attrs': {'class': 'yt-subscription-button-subscriber\
--count-branded-horizontal yt-subscriber-count'}}}
+                 'attrs': {'title': 'I dislike this'}}
+}
 
 REQUEST_PLAYLIST_PATHS = {
     "link":{"tag":"a",

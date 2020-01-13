@@ -2,22 +2,23 @@
 from commander import Commander
 
 if __name__ == '__main__':
-    REQUEST_NO = int(input('Number of requests: '))
-
+    INPUT = input('Please input a full YouTube video/playlist link:\n')
     COMMANDER = Commander()
 
-    for i in range(REQUEST_NO):
-        INPUT = input('Please input a full YouTube video/playlist link:\n')
+    if 'playlist' in INPUT:
+        COMMAND = {'type': 'playlist',
+                   'scraper': 'requests',
+                   'link': INPUT,
+                   'parse': True,
+                   'clean': True,
+                   'display': True}
 
-        if 'playlist' in INPUT:
-            COMMANDER.set_dataprocessor('playlist')
-            COMMANDER.set_scraper('requests')
-            DATA = COMMANDER.extract_data(INPUT)
+    elif 'watch' in INPUT:
+        COMMAND = {'type': 'video',
+                   'scraper': 'requests',
+                   'link': INPUT,
+                   'parse': True,
+                   'clean': True,
+                   'display': True}
 
-        elif 'watch' in INPUT:
-            COMMANDER.set_dataprocessor('video')
-            COMMANDER.set_scraper('requests')
-            DATA = COMMANDER.extract_data(INPUT)
-
-        COMMANDER.dataprocessor.display_data()
-
+    COMMANDER.execute(COMMAND)
