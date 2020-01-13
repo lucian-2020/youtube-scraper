@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from soup_paths import REQUEST_VIDEO_PATHS as RVP
 from soup_paths import REQUEST_PLAYLIST_PATHS as RPP
 
-class Parser(ABC):
+class DataProcessor(ABC):
     '''Blueprint for Youtube classes'''
     def __init__(self):
         self.current_data = None
@@ -21,7 +21,7 @@ class Parser(ABC):
         '''Method used displaying current object data'''
 
 
-class VideoParser(Parser):
+class VideoDP(DataProcessor):
     '''Class used for scraping a YouTube video'''
 
     def parse_data(self, source):
@@ -51,7 +51,7 @@ class VideoParser(Parser):
             print(f'{key}: {value}\n')
 
 
-class PlaylistParser(Parser):
+class PlaylistDP(DataProcessor):
     '''Class used for scraping a Youtube playlist'''
 
     def parse_data(self, source):

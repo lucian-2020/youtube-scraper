@@ -1,38 +1,35 @@
 '''Module responsible for defining commander classes'''
-from parsers import VideoParser, PlaylistParser
+from dataprocessors import VideoDP, PlaylistDP
 from scrapers import RequestsScraper
 
 class Commander:
-    '''Class responsible for orchestrating youtube/scraper functionality'''
-    _scrapers = {}
-    _targets = {}
+    '''Class responsible for orchestrating parsers/scrapers functionality'''
+    _scrapers_pool = {'requests':RequestsScraper}
+    _dataprocessors_pool = {'video':VideoDP, 'playlist': PlaylistDP}
 
-    def __init__(self, scraper=None, target=None):
-        if scraper and target:
+    _scrapers = {}
+    _dataprocessors = {}
+
+    def __init__(self, scraper=None, dataprocessor=None):
+        if scraper and targets:
             self.set_scraper(scraper)
-            self.set_target(target)
+            self.set_dataprocessor(dataprocessor)
 
     def set_scraper(self, scraper):
         '''Setting scraper and making sure to use the same object if already used'''
         if scraper in Commander._scrapers.keys():
             self.scraper = Commander._scrapers[scraper]
         else:
-            if 'requests' in scraper:
-                self.scraper = RequestsScraper()
-
+            self.scraper = Commander._scrapers_pool[scraper]()
             Commander._scrapers[scraper] = self.scraper
 
-    def set_target(self, target):
+    def set_dataprocessor(self, dataprocessor):
         '''Setting target and making sure to use the same object if already used'''
-        if target in Commander._targets.keys():
-            self.target = Commander._targets[target]
+        if dataprocessor in Commander._dataprocessors.keys():
+            self.dataprocessor = Commander._dataprocessors[dataprocessor]
         else:
-            if 'video' in target:
-                self.target = VideoParser()
-            elif 'playlist' in target:
-                self.target = PlaylistParser()
-
-            Commander._targets[target] = self.target
+            self.dataprocessor = Commander._dataprocessors_pool[dataprocessor]()
+            Commander._dataprocessors[dataprocessor] = self.dataprocessor
 
     def extract_data(self, url):
         '''Method used for requesting and returning video details
@@ -44,4 +41,4 @@ class Commander:
             [unnamed]: Video details
         '''
         self.scraper.make_request(url)
-        return self.target.parse_data(self.scraper.get_text())
+        return self.dataprocessor.parse_data(self.scraper.get_text())
