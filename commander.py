@@ -39,10 +39,10 @@ class Commander:
              if x in Commander._dataprocessors_pool.keys() else None,
             'scraper': lambda x: self.set_scraper(x)\
              if x in Commander._scrapers_pool.keys() else None,
-            'link': lambda x: self.scraper.get_request(x) if x else None,
-            'parse': lambda x: self.dataprocessor.parse_data(self.scraper.text) if x else None,
-            'clean': lambda x: self.dataprocessor.clean_data() if x else None,
-            'display': lambda x: self.dataprocessor.display_data() if x else None}
+            'link': lambda x: self.scraper.get(x) if x else None,
+            'parse': lambda x: self.dataprocessor.parse(self.scraper.text) if x else None,
+            'save': lambda x: self.dataprocessor.save() if x else None,
+            'display': lambda x: self.dataprocessor.display() if x else None}
 
     def execute(self, command):
         '''Executes given command using dispatcher'''

@@ -6,9 +6,9 @@ import requests
 class Scraper(ABC):
     '''Blueprint for Scraper classes'''
     @abstractmethod
-    def get_request(self, url):
+    def get(self, url):
         '''Method used for making a GET request at the url parameter'''
-    
+
     @property
     @abstractmethod
     def text(self):
@@ -17,7 +17,7 @@ class Scraper(ABC):
 
 class RequestsScraper(Scraper):
     '''
-    Class used for scraping YouTube videos using the requests library
+    Class used for scraping YouTube using the requests library
 
     Attributes:
         headers (dict): Stores headers used in GET requests
@@ -27,14 +27,14 @@ class RequestsScraper(Scraper):
         self.headers = {'User-Agent': 'Mozilla/5.0', 'Accept-Language':'en-US'}
         self.response = None
 
-    def get_request(self, url):
+    def get(self, url):
         '''Method used for making a GET request at the url parameter
 
         Args:
             url (string): Link to the webpage
         '''
         self.response = requests.get(url, headers=self.headers)
-    
+
     @property
     def text(self):
         '''Method used for returning the HTML of a a request

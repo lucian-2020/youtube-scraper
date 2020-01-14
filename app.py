@@ -6,24 +6,30 @@ if __name__ == '__main__':
     COMMANDER = Commander()
 
     if 'playlist' in INPUT:
-        COMMAND = {'type': 'playlist',
-                   'scraper': 'requests',
-                   'link': INPUT,
-                   'parse': True,
-                   'clean': True,
-                   'display': True}
-        COMMANDER.execute(COMMAND)
-        
-        COMMAND['type'] = 'video'
+        PLAYLIST_SETTINGS = {'type': 'playlist',
+                             'scraper': 'requests',
+                             'link': INPUT,
+                             'parse': True,
+                             'save': True,
+                             'display': False}
+        COMMANDER.execute(PLAYLIST_SETTINGS)
+
+        VIDEO_SETTINGS = {'type': 'video',
+                          'scraper': 'requests',
+                          'link': '',
+                          'parse': True,
+                          'save': True,
+                          'display': True}
+
         for video in COMMANDER.dataprocessor.current_data:
-            COMMAND['link'] = video
-            COMMANDER.execute(COMMAND)
+            VIDEO_SETTINGS['link'] = video
+            COMMANDER.execute(VIDEO_SETTINGS)
 
     elif 'watch' in INPUT:
-        COMMAND = {'type': 'video',
-                   'scraper': 'requests',
-                   'link': INPUT,
-                   'parse': True,
-                   'clean': True,
-                   'display': True}
-        COMMANDER.execute(COMMAND)
+        VIDEO_SETTINGS = {'type': 'video',
+                          'scraper': 'requests',
+                          'link': '',
+                          'parse': True,
+                          'save': True,
+                          'display': True}
+        COMMANDER.execute(VIDEO_SETTINGS)
