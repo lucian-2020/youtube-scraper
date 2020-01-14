@@ -12,6 +12,12 @@ if __name__ == '__main__':
                    'parse': True,
                    'clean': True,
                    'display': True}
+        COMMANDER.execute(COMMAND)
+        
+        COMMAND['type'] = 'video'
+        for video in COMMANDER.dataprocessor.current_data:
+            COMMAND['link'] = video
+            COMMANDER.execute(COMMAND)
 
     elif 'watch' in INPUT:
         COMMAND = {'type': 'video',
@@ -20,5 +26,4 @@ if __name__ == '__main__':
                    'parse': True,
                    'clean': True,
                    'display': True}
-
-    COMMANDER.execute(COMMAND)
+        COMMANDER.execute(COMMAND)
