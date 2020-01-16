@@ -6,29 +6,39 @@ if __name__ == '__main__':
     COMMANDER = Commander()
 
     if 'playlist' in INPUT:
-        PLAYLIST_SETTINGS = {'type': 'playlist',
-                             'scraper': 'requests',
-                             'link': INPUT,
+        COMMANDER_SETTINGS = {'set_dataprocessor': 'playlist',
+                              'set_scraper': 'requests'}
+        COMMANDER.execute(COMMANDER_SETTINGS)
+
+        PLAYLIST_SETTINGS = {'link': INPUT,
                              'parse': True,
-                             'save': True,
+                             #'save': True,
                              'display': False}
         COMMANDER.execute(PLAYLIST_SETTINGS)
+        DATA = COMMANDER.dataprocessor.current_data
 
-        VIDEO_SETTINGS = {'type': 'video',
-                          'scraper': 'requests',
-                          'link': '',
+        COMMANDER_SETTINGS = {'set_dataprocessor': 'video',
+                              'set_scraper': 'requests',
+                              'set_recommender': 'simple'}
+        COMMANDER.execute(COMMANDER_SETTINGS)
+
+        VIDEO_SETTINGS = {'link': '',
                           'parse': True,
-                          'save': True,
-                          'display': True}
-
-        for video in COMMANDER.dataprocessor.current_data:
+                          #'save': True,
+                          'display': False,
+                          'recommend': True}
+        for video in DATA:
             VIDEO_SETTINGS['link'] = video
             COMMANDER.execute(VIDEO_SETTINGS)
 
+        COMMANDER.recommend()
+
     elif 'watch' in INPUT:
-        VIDEO_SETTINGS = {'type': 'video',
-                          'scraper': 'requests',
-                          'link': '',
+        COMMANDER_SETTINGS = {'set_dataprocessor': 'video',
+                              'set_scraper': 'requests'}
+        COMMANDER.execute(COMMANDER_SETTINGS)
+
+        VIDEO_SETTINGS = {'link': INPUT,
                           'parse': True,
                           'save': True,
                           'display': True}

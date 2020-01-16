@@ -1,4 +1,4 @@
-'''Module responsible for defining Youtube objects'''
+'''Module responsible for defining Youtube classes'''
 import json
 
 from abc import ABC, abstractmethod
@@ -47,8 +47,8 @@ class VideoDP(DataProcessor):
 ['itemListElement'][0]['item']['name']
 
         for detail in ['likes', 'dislikes', 'number_of_views']:
-            video_details[detail] = ''.join(digit for digit in \
-video_details[detail] if digit.isdigit())
+            video_details[detail] = int(''.join(digit for digit in \
+video_details[detail] if digit.isdigit()))
 
         self.current_data = video_details
 
