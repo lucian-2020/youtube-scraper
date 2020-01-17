@@ -4,7 +4,7 @@ from scrapers import RequestsScraper
 from recommenders import SimpleRecommender
 
 class Commander:
-    '''Class responsible for orchestrating dataprocessors/scrapers functionality'''
+    '''Class responsible for orchestrating dataprocessors/scrapers/recommenders functionality'''
     scrapers_pool = {'requests': RequestsScraper}
     dataprocessors_pool = {'video': VideoDP, 'playlist': PlaylistDP}
     recommenders_pool = {'simple': SimpleRecommender}
@@ -15,12 +15,12 @@ class Commander:
 
     def __init__(self):
         self.set_dispatcher()
-        
+
     def set(self, res, value):
         '''Setting resource and making sure to use cache if already instantiated'''
         res_dict = getattr(Commander, ''.join([res, 's']))
         res_pool = getattr(Commander, ''.join([res, 's_pool']))
-        
+
         if value in res_dict.keys():
             setattr(self, res, res_dict[value])
         else:
@@ -31,8 +31,8 @@ class Commander:
         '''Sets dispatcher dictionary and self variables'''
         self.dataprocessor, self.scraper, self.recommender = (None, None, None)
         self._dispatcher = {
-            'set_dataprocessor': lambda x: self.set('dataprocessor', x),
-            'set_scraper': lambda x: self.set('scraper', x),
+            'set_dataprocessor': lambda x: self.set('dataprocessor', x) if x else None,
+            'set_scraper': lambda x: self.set('scraper', x) if x else None,
             'link': lambda x: self.scraper.get(x) if x else None,
             'parse': lambda x: self.dataprocessor.parse(self.scraper.text) if x else None,
             'save': lambda x: self.dataprocessor.save() if x else None,
