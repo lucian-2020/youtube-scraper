@@ -32,5 +32,5 @@ class SimpleRecommender(Recommender):
 
 
         data = sorted(self.current_data, key=lambda x: x['ratio'], reverse=True)
-        for index in range(10):
-            print(data[index]['title'])
+        for index in range(int(len(data)/3)):
+            print(data[index]['title'], data[index]['ratio'])

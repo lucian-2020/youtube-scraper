@@ -5,57 +5,39 @@ from recommenders import SimpleRecommender
 
 class Commander:
     '''Class responsible for orchestrating dataprocessors/scrapers functionality'''
-    _scrapers_pool = {'requests': RequestsScraper}
-    _dataprocessors_pool = {'video': VideoDP, 'playlist': PlaylistDP}
-    _recommenders_pool = {'simple': SimpleRecommender}
+    scrapers_pool = {'requests': RequestsScraper}
+    dataprocessors_pool = {'video': VideoDP, 'playlist': PlaylistDP}
+    recommenders_pool = {'simple': SimpleRecommender}
 
-    _scrapers = {}
-    _dataprocessors = {}
-    _recommenders = {}
+    scrapers = {}
+    dataprocessors = {}
+    recommenders = {}
 
-    def __init__(self, scraper=None, dataprocessor=None, recommender=None):
-        if scraper and dataprocessor and recommender:
-            self.set_scraper(scraper)
-            self.set_dataprocessor(dataprocessor)
-            self.set_recommender(recommender)
+    def __init__(self):
         self.set_dispatcher()
-
-    def set_scraper(self, scraper):
-        '''Setting scraper and making sure to use the same object if already used'''
-        if scraper in Commander._scrapers.keys():
-            self.scraper = Commander._scrapers[scraper]
+        
+    def set(self, res, value):
+        '''Setting resource and making sure to use cache if already instantiated'''
+        res_dict = getattr(Commander, ''.join([res, 's']))
+        res_pool = getattr(Commander, ''.join([res, 's_pool']))
+        
+        if value in res_dict.keys():
+            setattr(self, res, res_dict[value])
         else:
-            self.scraper = Commander._scrapers_pool[scraper]()
-            Commander._scrapers[scraper] = self.scraper
-
-    def set_dataprocessor(self, dataprocessor):
-        '''Setting target and making sure to use the same object if already used'''
-        if dataprocessor in Commander._dataprocessors.keys():
-            self.dataprocessor = Commander._dataprocessors[dataprocessor]
-        else:
-            self.dataprocessor = Commander._dataprocessors_pool[dataprocessor]()
-            Commander._dataprocessors[dataprocessor] = self.dataprocessor
-
-    def set_recommender(self, recommender):
-        '''Setting target and making sure to use the same object if already used'''
-        if recommender in Commander._recommenders.keys():
-            self.recommender = Commander._recommenders[recommender]
-        else:
-            self.recommender = Commander._recommenders_pool[recommender]()
-            Commander._recommenders[recommender] = self.recommender
+            setattr(self, res, res_pool[value]())
+            res_dict[value] = getattr(self, res)
 
     def set_dispatcher(self):
-        '''Setts dispatcher dictionary responsible for command logic'''
+        '''Sets dispatcher dictionary and self variables'''
+        self.dataprocessor, self.scraper, self.recommender = (None, None, None)
         self._dispatcher = {
-            'set_dataprocessor': lambda x: self.set_dataprocessor(x)\
-             if x in Commander._dataprocessors_pool.keys() else None,
-            'set_scraper': lambda x: self.set_scraper(x)\
-             if x in Commander._scrapers_pool.keys() else None,
+            'set_dataprocessor': lambda x: self.set('dataprocessor', x),
+            'set_scraper': lambda x: self.set('scraper', x),
             'link': lambda x: self.scraper.get(x) if x else None,
             'parse': lambda x: self.dataprocessor.parse(self.scraper.text) if x else None,
             'save': lambda x: self.dataprocessor.save() if x else None,
             'display': lambda x: self.dataprocessor.display() if x else None,
-            'set_recommender': lambda x: self.set_recommender(x) if x else None,
+            'set_recommender': lambda x: self.set('recommender', x) if x else None,
             'recommend': lambda x: self.recommender.append(\
 self.dataprocessor.current_data) if x else None}
 
